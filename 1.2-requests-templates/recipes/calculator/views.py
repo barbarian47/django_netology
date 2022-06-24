@@ -1,5 +1,7 @@
 from django.shortcuts import render
 
+
+
 DATA = {
     'omlet': {
         'яйца, шт': 2,
@@ -28,3 +30,30 @@ DATA = {
 #     'ингредиент2': количество2,
 #   }
 # }
+
+
+def omlet(request):
+    context = {'recipe': {}}
+    servings = int(request.GET.get('servings', 1))
+    for key, value in DATA['omlet'].items():
+        context['recipe'][key] = value * servings
+
+    return render(request, 'calculator/index.html', context)
+
+
+def pasta(request):
+    context = {'recipe': {}}
+    servings = int(request.GET.get('servings', 1))
+    for key, value in DATA['pasta'].items():
+        context['recipe'][key] = value * servings
+
+    return render(request, 'calculator/index.html', context)
+
+
+def buter(request):
+    context = {'recipe': {}}
+    servings = int(request.GET.get('servings', 1))
+    for key, value in DATA['buter'].items():
+        context['recipe'][key] = value * servings
+
+    return render(request, 'calculator/index.html', context)
