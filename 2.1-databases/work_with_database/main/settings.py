@@ -45,7 +45,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# Database
+#
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
 DATABASES = {
@@ -55,7 +55,7 @@ DATABASES = {
         'HOST': '127.0.0.1',
         'PORT': '5432',
         'USER': 'postgres',
-        'PASSWORD': 'ваш пароль',
+        'PASSWORD': 'postgres',
     }
 }
 
