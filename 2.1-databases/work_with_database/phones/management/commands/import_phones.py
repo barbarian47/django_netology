@@ -14,11 +14,11 @@ class Command(BaseCommand):
 
         for phone in phones:
             slug = phone['name'].replace(' ', '-').lower()
-            current_phone = Phone(
+            current_phone = Phone.objects.create(
                     name=phone['name'],
                     price=phone['price'],
                     image=phone['image'],
                     release_date=phone['release_date'],
                     lte_exists=phone['lte_exists'],
                     slug=slug)
-            current_phone.save()
+#            current_phone.save()

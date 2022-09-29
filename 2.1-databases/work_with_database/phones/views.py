@@ -18,9 +18,11 @@ def show_catalog(request):
         phone_objects = Phone.objects.order_by('price').reverse()
     else:
         phone_objects = Phone.objects.all()
+
     context = {
         'phones': phone_objects
      }
+
     return render(request, template, context)
 
 
@@ -30,4 +32,5 @@ def show_product(request, slug):
     context = {
         'phone': phone_object
      }
+
     return render(request, template, context)
