@@ -24,25 +24,6 @@ def factory_student():
 
     return student
 
-# @pytest.mark.django_db
-# def test_get_courses(client, course_factory):
-#     # Arrange
-# #    client = APIClient()
-# #    Student.objects.create(name='Alex')
-#     Course.objects.create(name='course1')
-#     courses = course_factory(_quantity=10)
-#
-#
-#     # Act
-#     response = client.get('http://127.0.0.1:8000/api/v1/courses/')
-#
-#     # Assert
-#     assert response.status_code == 200
-#     data = response.json()
-#     assert len(data) == len(courses) + 1
-#     assert data[0]['name'] == 'course1'
-#     assert data[0]['id'] == 1
-
 @pytest.mark.django_db
 def test_create_course(client):
     count = Course.objects.count()
