@@ -14,13 +14,13 @@ class AdvertisementViewSet(ModelViewSet):
     """ViewSet для объявлений."""
     queryset = Advertisement.objects.all()
     serializer_class = AdvertisementSerializer
-    filter_backends = (filters.DjangoFilterBackend)
+    filter_backends = (filters.DjangoFilterBackend, )
     filterset_class = AdvertisementFilter
 
     def list(self, request, *args, **kwargs):
         filter_queryset = []
-        for adv in Advertisement.object.all():
-            if adv.draft is False or adv.creator == request.user:
+        for adv in Advertisement.objects.all():
+            if (adv.draft is False) or adv.creator == request.user:
                 filter_queryset.append(adv)
         serializer = AdvertisementSerializer(filter_queryset, many=True)
         return Response(serializer.data)
