@@ -13,8 +13,8 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-import django_filters.rest_framework
-import rest_framework.pagination
+# import django_filters.rest_framework
+# import rest_framework.pagination
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -137,5 +137,6 @@ STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
-    'PAGE_SIZE': 1
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10
 }
