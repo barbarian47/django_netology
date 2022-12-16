@@ -2,7 +2,6 @@ import pytest
 from rest_framework.test import APIClient
 from model_bakery import baker
 
-from django.conf import settings
 from students.models import Course, Student
 
 
@@ -28,7 +27,7 @@ def factory_student():
 def test_create_course(client):
     count = Course.objects.count()
     data = {'name': 'course2'}
-    response = client.post('http://127.0.0.1:8000/api/v1/courses/', data=data)
+    response = client.post('/api/v1/courses/', data=data)
     res_json = response.json()
 
     assert response.status_code == 201
@@ -40,7 +39,7 @@ def test_update_course(client, factory_course):
     courses = factory_course(_quantity=10)
     id_course = courses[0].id
     data = {'name': 'course3'}
-    response = client.patch(f'http://127.0.0.1:8000/api/v1/courses/{id_course}/', data=data)
+    response = client.patch(f'/api/v1/courses/{id_course}/', data=data)
 
     assert response.status_code == 200
     assert Course.objects.filter(id=id_course)[0].name == data['name']
@@ -51,7 +50,7 @@ def test_delete_course(client, factory_course):
     count = Course.objects.count()
     id_course = courses[4].id
 
-    response = client.delete(f'http://127.0.0.1:8000/api/v1/courses/{id_course}/')
+    response = client.delete(f'/api/v1/courses/{id_course}/')
 
     assert response.status_code == 204
     assert count - 1 == Course.objects.count()
@@ -61,7 +60,7 @@ def test_get_one_course(client, factory_course):
     courses = factory_course(_quantity=1)
     id_course = courses[0].id
 
-    response = client.get(f'http://127.0.0.1:8000/api/v1/courses/{id_course}/')
+    response = client.get(f'/api/v1/courses/{id_course}/')
     res_json = response.json()
 
     assert response.status_code == 200
@@ -71,7 +70,7 @@ def test_get_one_course(client, factory_course):
 def test_get_list_courses(client, factory_course):
     courses = factory_course(_quantity=20)
 
-    response = client.get('http://127.0.0.1:8000/api/v1/courses/')
+    response = client.get('/api/v1/courses/')
     res_json = response.json()
 
     assert response.status_code == 200
@@ -83,24 +82,26 @@ def test_get_list_courses(client, factory_course):
 def test_filter_courses_id(client, factory_course):
     courses = factory_course(_quantity=10)
     id_course = courses[5].id
+    data = {'id': id_course}
 
-    response = client.get(f'http://127.0.0.1:8000/api/v1/courses/?{id_course}/')
+    response = client.get(f'/api/v1/courses/', data=data)
     res_json = response.json()
 
     assert response.status_code == 200
-    assert res_json[5]['id'] == id_course
+    assert res_json[0]['id'] == id_course
 
 @pytest.mark.django_db
-def test_filter_course_name(client, factory_course):
+def test_filter_course_name(client, factory_course, settings):
     courses = factory_course(_quantity=10)
     name_course = courses[5].name
+    data = {'name': name_course}
 
-    response = client.get(f'http://127.0.0.1:8000/api/v1/courses/?{name_course}/')
+    response = client.get(f'/api/v1/courses/', data=data)
     res_json = response.json()
 
     assert response.status_code == 200
-    assert res_json[5]['name'] == name_course
-    assert Course.objects.filter(name=name_course)[0].name == res_json[5]['name']
+    assert res_json[0]['name'] == name_course
+    assert Course.objects.filter(name=name_course)[0].name == res_json[0]['name']
 
 @pytest.mark.parametrize(
     ['num_students', 'answer'],
@@ -111,11 +112,14 @@ def test_filter_course_name(client, factory_course):
     )
 )
 @pytest.mark.django_db
-def test_students_limit(client, factory_student, num_students, answer):
+def test_students_limit(client, factory_student, num_students, answer, settings):
     students = factory_student(_quantity=num_students)
     id_students = [student.id for student in students]
     data = {'name': 'TestCourse', 'students': id_students}
-    response = client.post('http://127.0.0.1:8000/api/v1/courses/', data=data)
+    settings.MAX_STUDENTS_PER_COURSE = 20
+    response = client.post('/api/v1/courses/', data=data)
 
     assert response.status_code == answer
+    assert settings.MAX_STUDENTS_PER_COURSE
     assert settings.MAX_STUDENTS_PER_COURSE == 20
+
