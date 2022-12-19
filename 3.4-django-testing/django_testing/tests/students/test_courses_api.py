@@ -123,3 +123,16 @@ def test_students_limit(client, factory_student, num_students, answer, settings)
     assert settings.MAX_STUDENTS_PER_COURSE
     assert settings.MAX_STUDENTS_PER_COURSE == 20
 
+@pytest.mark.parametrize(
+    ['num_students', 'valid'],
+    (
+        (1, True),
+        (30, True),
+        (32, False)
+    )
+)
+@pytest.mark.django_db
+def test_students_limit_without_db(num_students, valid, settings):
+    res = num_students <= settings.MAX_STUDENTS_PER_COURSE
+
+    assert res is valid
